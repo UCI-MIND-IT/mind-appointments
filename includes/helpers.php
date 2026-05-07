@@ -913,7 +913,7 @@ function appointments_get_price( $service_id, $worker_id ) {
 	}
 
 	$worker_price = ( $worker && $worker->price ) ? $worker->price : 0;
-	return $service->price + $worker_price;
+	return (float)$service->price + $worker_price;
 }
 
 
