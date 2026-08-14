@@ -393,34 +393,13 @@ EO_ADMIN_JS;
 					echo '<b class="required">*</b>';
 				}
 ?></span></label>
-                
-                    <?php if ( 'select' === $field['type'] && ! empty( $field['options'] ) ) :
-                        $options_array = array();
-                        foreach ( explode( ',', $field['options'] ) as $opt ) {
-                            $parts = explode( ':', trim( $opt ), 2 );
-                            if ( count( $parts ) === 2 ) {
-                                $options_array[ trim( $parts[0] ) ] = trim( $parts[1] );
-                            }
-                        }
-                    ?>
-                        <select
-                            id="<?php echo esc_attr( $id ); ?>"
-                            class="appointments-field-entry appointments-<?php echo esc_attr( $clean ); ?>-field-entry"
-                            data-name="additional_fields[<?php echo esc_attr( $clean ); ?>]"
-                        >
-                            <?php foreach ( $options_array as $opt_value => $opt_label ) : ?>
-                                <option value="<?php echo esc_attr( $opt_value ); ?>" <?php selected( $value, $opt_value ); ?>><?php echo esc_html( $opt_label ); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    <?php else : ?>
-                        <input
+                    <input
                             type="<?php echo esc_attr( $field['type'] ); ?>"
                             id="<?php echo esc_attr( $id ); ?>"
                             class="appointments-field-entry appointments-<?php echo esc_attr( $clean ); ?>-field-entry"
                             data-name="additional_fields[<?php echo esc_attr( $clean ); ?>]"
                             value="<?php echo esc_attr( $value ); ?>"
-                        />
-                    <?php endif; ?>
+                    />
                 </div>
 <?php
 		}
@@ -479,7 +458,6 @@ EO_ADMIN_JS;
 		$_types = array(
 			'text' => __( 'Text', 'appointments' ),
 			'checkbox' => __( 'Checkbox', 'appointments' ),
-            'select'   => __( 'Dropdown', 'appointments' ),
 		);
 		$options = appointments_get_options();
 		$fields = $options['additional_fields'];
@@ -517,10 +495,6 @@ EO_ADMIN_JS;
                                         <option value="<?php esc_attr_e( $type ); ?>"><?php echo esc_html( $label ); ?></option>
                                     <?php } ?>
                                 </select>
-                            </label>
-                            <label for="app-new_additional_field-options" id="app-new_additional_field-options-wrap" style="display:none;">
-                                <?php _e( 'Options (format: value:Label, value2:Label 2):', 'appointments' ); ?>
-                                <input type="text" value="" id="app-new_additional_field-options" placeholder="e.g. virtual:Virtual (Zoom), in_person:In Person" style="width:400px;" />
                             </label>
                             <label for="app-new_additional_field-required">
                                 <input type="checkbox" value="" id="app-new_additional_field-required" />
@@ -583,13 +557,6 @@ EO_ADMIN_JS;
     $(function () {
         $(document).on("click", "#app-new_additional_field-add", add_new_field);
         $(document).on("click", ".app-additional_fields-remove", remove_field);
-        $(document).on("change", "#app-new_additional_field-type", function () {
-            if ( $(this).val() === 'select' ) {
-                $("#app-new_additional_field-options-wrap").show();
-            } else {
-                $("#app-new_additional_field-options-wrap").hide();
-            }
-        });
     });
 
     })(jQuery);

@@ -34,4 +34,13 @@
 			<input type="text" id="app_city" class="regular-text" name="app_city" value="<?php echo get_user_meta( $profileuser->ID, 'app_city', true ) ?>" <?php echo $is_readonly ?> />
 		</td>
 	</tr>
+
+    <tr>
+        <th><label for="app_zoom_link"><?php _e("My Zoom Link", 'appointments'); ?></label></th>
+        <td>
+            <input type="text" id="app_zoom_link" class="widefat" name="app_zoom_link"
+                value="<?php echo esc_url( get_user_meta( $profileuser->ID, 'app_zoom_link', true ) ); ?>"
+                <?php echo $is_readonly; ?> />
+        </td>
+    </tr>
 </table>

@@ -399,6 +399,10 @@ if ( ! class_exists( 'Appointments' ) ) {
 	 */
 		function get_admin_email() {
 			global $current_site;
+            $options = get_option( 'appointments_options' );
+            if ( isset( $options['notification_email'] ) && ! empty( $options['notification_email'] ) ) {
+                return apply_filters( 'app_get_admin_email', $options['notification_email'] );
+            }
 			$admin_email = get_option( 'admin_email' );
 			if ( ! $admin_email ) {
 				$admin_email = 'admin@' . $current_site->domain; }

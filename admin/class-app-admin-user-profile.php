@@ -36,7 +36,10 @@ class Appointments_Admin_User_Profile {
 			if ( isset( $_POST['app_city'] ) ) {
 				update_user_meta( $profileuser_id, 'app_city', $_POST['app_city'] );
 			}
-
+            //zoom link
+            if ( isset( $_POST['app_zoom_link'] ) ) {
+                update_user_meta( $profileuser_id, 'app_zoom_link', esc_url_raw( $_POST['app_zoom_link'] ) );
+            }
 
 			// Cancel appointment
 			if ( isset( $appointments->options['allow_cancel'] ) && 'yes' == $appointments->options['allow_cancel'] &&

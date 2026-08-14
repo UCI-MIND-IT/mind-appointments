@@ -182,7 +182,7 @@ class App_Shortcode_Confirmation extends App_Shortcode {
 				</div>
 				<div class="appointments-note-field" style="display:none">
 					<label>
-						<span><?php echo $args['note']; ?><b class="required">*</b></span>
+						<span><?php echo $args['note']; ?></span>
 						<input type="text" class="appointments-note-field-entry" id="<?php echo esc_attr( apply_filters( 'app-shortcode-confirmation-note_field_id', 'appointments-field-customer_note' ) ); ?>" />
 					</label>
 				</div>
