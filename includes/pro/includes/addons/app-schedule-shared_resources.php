@@ -22,7 +22,7 @@ class App_Schedule_SharedResources {
 	}
 
 	private function _add_hooks() {
-		add_action( 'plugins_loaded', array( $this, 'initialize' ) );
+		add_action( 'plugins_loaded', array( $this, 'initialize' ), 20 );
 		add_filter( 'app-is_busy', array( $this, 'check_shared_resources' ), 10, 2 );
 		// Augment service settings pages
 		add_filter( 'app-settings-services-service-name', array( $this, 'add_service_selection' ), 10, 2 );
@@ -46,7 +46,8 @@ class App_Schedule_SharedResources {
 	}
 
 	public function add_service_selection( $out, $service_id ) {
-		$shared_ids = $this->_get_resource_sharing_services( $service_id );
+		error_log( 'add_service_selection fired for service ' . $service_id . ' data: ' . print_r( $this->_data, true ) );
+        $shared_ids = $this->_get_resource_sharing_services( $service_id );
 		$direct_ids = $this->_get_resource_sharing_services( $service_id, true );
 		$all = appointments_get_services();
 		$out .= '<div class="app-shared_resources">';
@@ -90,9 +91,10 @@ foreach ( $all as $service ) {
 	}
 
 	public function save_service_shared_resources( $service_id ) {
-		$shared = array();
+		error_log( print_r( $_POST, true ) );
+        $shared = array();
 		if ( isset( $_POST['shared_resources'] ) ) {
-			$shared = array_values( array_filter( array_map( 'intval', $_POST['shared_resources'] ) ) );
+            $shared = array_values( array_filter( array_map( 'intval', $_POST['shared_resources'] ) ) );
 		}
 		$all_resources = get_option( 'appointments_services_shared_resources', array() );
 		$all_resources[ $service_id ] = $shared;
@@ -100,7 +102,10 @@ foreach ( $all as $service ) {
 	}
 
 	public function check_shared_resources( $is_busy, $period ) {
-		$service_id = $this->_core->service;
+		if ( empty( $this->_core )){
+            $this->_core = appointments();
+        }
+        $service_id = $this->_core->service;
 		if ( empty( $service_id ) ) {
 			return $is_busy;
 		}
@@ -108,9 +113,14 @@ foreach ( $all as $service ) {
 		if ( empty( $services ) || 1 == count( $services ) ) {
 			return $is_busy;
 		}
+        $worker_id = $this->_core->worker;
+        if ( ! empty( $worker_id ) ) {
+            return $this->_get_booked_appointments_for_period( $services, $period, $worker_id ) >= 1;
+        }
 		$capacity = $this->_get_minimum_capacity( $services );
 		$booked = $this->_get_booked_appointments_for_period( $services, $period );
-		return $booked >= $capacity;
+	    error_log( "service_id: $service_id | services: " . implode( ',', $services ) . " | capacity: $capacity | booked: $booked" );
+        return $booked >= $capacity;
 	}
 
 	private function _get_resource_sharing_services( $service_id, $direct_descentant_only = false ) {
@@ -180,6 +190,9 @@ foreach ( $all as $service ) {
 			'status' => array( 'paid', 'confirmed' ),
 			'count' => true,
 		);
+        if ( ! empty( $worker_id ) ) {
+            $args['worker'] = $worker_id;
+        }
 		return appointments_get_appointments( $args );
 	}
 
